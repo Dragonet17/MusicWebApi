@@ -55,6 +55,23 @@ namespace AudioRimacPlayer.Models
             return song;
         }
 
+        public static async Task<JsonSong> GetYouTubeVideoUrlForSong(JsonSong jsonSong)
+        {
+            var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+            {
+                ApiKey = "AIzaSyDkS9sfEA6DExEN_N621zEXslxXLTjzbOM",
+                ApplicationName = "RimacAudioPlayer"
+            });
+
+            var searchListRequest = youtubeService.Search.List("snippet");
+            searchListRequest.Q = $"{jsonSong.SongName} {jsonSong.ArtistName}";
+            searchListRequest.MaxResults = 2;
+
+            var searchListResponse = await searchListRequest.ExecuteAsync();
+            jsonSong.YouTubeUrl = searchListResponse.Items.First().Id.VideoId;
+            return jsonSong;
+        }
+
         public static async Task<string> GetJsonSongsAsync(Uri url)
         {
             HttpClient client = new HttpClient();
