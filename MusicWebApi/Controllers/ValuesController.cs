@@ -39,17 +39,17 @@ namespace MusicWebApi.Controllers
 
             }
             _jsonSongs = jsonSongs;
-
             return jsonSongs.AsEnumerable();
         }
 
         //GET api/values/5
         [HttpGet]
-        public JsonSong ChooseSong(int id)
+        public async Task<JsonSong> ChooseSong(string search,int id)
         {
-            List<JsonSong> jsonSongs = new List<JsonSong>();
+            var songs =await GetSongs(search);
 
-            var jsonSong = _jsonSongs?.Find(s => s.Id == id);
+
+            var jsonSong = songs.ToList().Find(s => s.Id == id);
             return jsonSong;
         }
 
