@@ -8,6 +8,7 @@ namespace MusicApp.Cache
 {
     public class MemoryCacher
     {
+
         public enum DateToCache
         {
             Songs,Artists,Albums,AlbumsSongs
@@ -33,10 +34,21 @@ namespace MusicApp.Cache
             }
         }
 
-        public bool HasValue(string key)
+        public bool IfCacheExsist(string key)
         {
             MemoryCache memoryCache = MemoryCache.Default;
-            return memoryCache.Contains(key);
+            var cache = memoryCache.Get(key);
+            return cache != null;
+        }
+
+        public void ClearCache(string key)
+        {
+            MemoryCache memoryCache = MemoryCache.Default;
+            
+            if (IfCacheExsist(key))
+            {
+                Delete(key);
+            }
         }
     }
 }

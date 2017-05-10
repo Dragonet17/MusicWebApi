@@ -6,18 +6,16 @@ using System.Web;
 
 namespace MusicApp.Models
 {
-    public class SongYouTube:ISongYouTube
+    public class SongYouTube:GetYouTubeVideo,ISongYouTube
     {
         public Song Song { get; set; }
-        public string YouTubeVideoUrl { get; set; }
 
-        private readonly GetYouTubeVideo _getyt = new GetYouTubeVideo();
 
         public async  Task<SongYouTube> ConvertSongToYouTubeSong(Song song)
         {
             SongYouTube songYouTube =  new SongYouTube{Song = song};
             string search = $"{song.ArtistName} {song.SongName}";
-            songYouTube.YouTubeVideoUrl = await  _getyt.GetYouTubeVideoUrl(search);
+            songYouTube.YouTubeVideoUrl = await  GetYouTubeVideoUrl(search);
             return songYouTube;
         }
 

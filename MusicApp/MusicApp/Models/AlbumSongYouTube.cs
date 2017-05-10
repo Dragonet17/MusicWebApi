@@ -6,18 +6,26 @@ using System.Web;
 
 namespace MusicApp.Models
 {
-    public class AlbumSongYouTube:IAlbumSongYouTube
+    public class AlbumSongYouTube : GetYouTubeVideo, IAlbumSongYouTube
     {
-        public AlbumSong AlbumSong { get; set; }
-        public string YouTubeVideoUrl { get; set; }
+        public int SongId { get; set; }
+        public string SongName { get; set; }
+        public string ArtistName { get; set; }
+        public string AlbumCovertUrl { get; set; }
 
-        private readonly GetYouTubeVideo _getyt = new GetYouTubeVideo();
-
-        public async Task<AlbumSongYouTube> ConvertAlbumSongToYouTubeAlbumSong(AlbumSong albumsong,int id)
+        public async Task<AlbumSongYouTube> ConvertAlbumSongToYouTubeAlbumSong(AlbumSong albumsong, int id)
         {
-            AlbumSongYouTube albumSongsYt = new AlbumSongYouTube {AlbumSong = albumsong};
-            string search = $"{albumsong.ArtistName} {albumsong.SongNames[id]}";
-            albumSongsYt.YouTubeVideoUrl = await _getyt.GetYouTubeVideoUrl(search);
+            AlbumSongYouTube albumSongsYt = new AlbumSongYouTube
+            {
+                SongId = 0,
+                SongName = (albumsong.AlbumSongsNames.Find(s => s.Id == id).SongName),
+                ArtistName = albumsong.ArtistName,
+                AlbumCovertUrl = albumsong.CovertUrl
+            };
+
+
+            string search = $"{albumsong.ArtistName} {albumSongsYt.YouTubeVideoUrl}";
+            albumSongsYt.YouTubeVideoUrl = await GetYouTubeVideoUrl(search);
             return albumSongsYt;
         }
 

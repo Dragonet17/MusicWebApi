@@ -134,6 +134,7 @@
     <Compile Include="Cache\Cache.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Models\Album.cs" />
+    <Compile Include="Models\AlbumElement.cs" />
     <Compile Include="Models\AlbumSong.cs" />
     <Compile Include="Models\AlbumSongYouTube.cs" />
     <Compile Include="Models\Artist.cs" />
@@ -160,6 +161,7 @@
     <Content Include="packages.config" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\GetApi.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

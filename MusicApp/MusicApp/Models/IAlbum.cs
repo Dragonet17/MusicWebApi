@@ -8,14 +8,11 @@ namespace MusicApp.Models
 {
     interface IAlbum
     {
-        int AlbumId { get; set; }
-        string AlbumName { get; set; }
-        string AlbumCovertUrl { get; set; }
+
         string ArtistName { get; set; }
         string ArtistImgUrl { get; set; }
 
 
-
-        Task<List<Album>> GetArtistAlbumsAsync(Artist artist);
+        Task<Album> GetArtistAlbumsAsync(Artist artist);
     }
 }

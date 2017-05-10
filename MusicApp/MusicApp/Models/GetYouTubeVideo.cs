@@ -16,6 +16,7 @@ namespace MusicApp.Models
 {
     public class GetYouTubeVideo
     {
+        public string YouTubeVideoUrl { get; set; }
         public async Task<string> GetYouTubeVideoUrl(string search)
         {
             var youtubeService = new YouTubeService(new BaseClientService.Initializer()

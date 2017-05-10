@@ -8,8 +8,12 @@ namespace MusicApp.Models
 {
     interface IAlbumSongYouTube
     {
-         AlbumSong AlbumSong { get; set; }
-         string YouTubeVideoUrl { get; set; }
+        int SongId { get; set; }
+        string SongName { get; set; }
+        string ArtistName { get; set; }
+        string AlbumCovertUrl { get; set; }
+        string YouTubeVideoUrl { get; set; }
+
 
         Task<AlbumSongYouTube> ConvertAlbumSongToYouTubeAlbumSong(AlbumSong albumsong,int id);
     }

@@ -10,16 +10,15 @@ namespace MusicApp.Models
     public class Album : StringOperation, IAlbum
     {
 
-        public int AlbumId { get; set; }
-        public string AlbumName { get; set; }
-        public string AlbumCovertUrl { get; set; }
+
         public string ArtistName { get; set; }
         public string ArtistImgUrl { get; set; }
+        public List<AlbumElement> AlbumElementses = new List<AlbumElement>();
 
 
         private readonly GetJsonAsync _getJson = new GetJsonAsync();
 
-        public async Task<List<Album>> GetArtistAlbumsAsync(Artist artist)
+        public async Task<Album> GetArtistAlbumsAsync(Artist artist)
         {
             Uri urladdress =
                 new Uri(
@@ -30,25 +29,29 @@ namespace MusicApp.Models
             var jsonobj = JObject.Parse(jsons);
             var jsonsearch = jsonobj["topalbums"]["album"];
             int counter = jsonsearch.ToArray().Length;
+            Album album = new Album
+            {
+                ArtistName = artist.ArtistName,
+                ArtistImgUrl = artist.ArtistImgUrl
+            };
 
 
-            List<Album> albums = new List<Album>();
+
             if (counter > 10) counter = 10;
             for (int i = 0; i <= counter - 1; i++)
             {
-                Album album = new Album();
-                album.AlbumId = i;
-                album.ArtistName = artist.ArtistName;
+                AlbumElement albumElement = new AlbumElement
+                {
+                    AlbumId = i,
+                    AlbumName = EncodeStringUtf8(jsonsearch[i]["name"].ToString()),
+                    AlbumCovertUrl = EncodeStringUtf8(jsonsearch[i]["image"][3]["#text"].ToString())
+                };
 
-                album.AlbumName = EncodeStringUtf8(jsonsearch[i]["name"].ToString());
-
-                album.AlbumCovertUrl = EncodeStringUtf8(jsonsearch[i]["image"][3]["#text"].ToString());
-                album.ArtistImgUrl = artist.ArtistImgUrl;
-                albums.Add(album);
+                album.AlbumElementses.Add(albumElement);
 
             }
 
-            return albums;
+            return album;
         }
     }
 }

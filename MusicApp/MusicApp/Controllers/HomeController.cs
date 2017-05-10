@@ -14,5 +14,11 @@ namespace MusicApp.Controllers
 
             return View();
         }
+
+        public ActionResult GetApi()
+        {
+
+            return View();
+        }
     }
 }
