@@ -9,17 +9,17 @@ namespace MusicApp.Models
 {
     public class AlbumSong:StringOperation,IAlbumSong
     {
-        public string ArtistName { get; set; }
-        public string ArtistImagetUrl { get; set; }
-        public string Name { get; set; }
+        public string AlbumArtistName { get; set; }
+        public string AlbumArtistImagetUrl { get; set; }
+        public string AlbumName { get; set; }
         public List<AlbumSongName> AlbumSongsNames = new List<AlbumSongName>();
-        public string CovertUrl { get; set; }
+        public string AlbumCovertUrl { get; set; }
 
         private readonly GetJsonAsync _getJson = new GetJsonAsync();
 
         public async Task<AlbumSong> GetAlbumSongs(Album album,int id)
         {
-            string albumName = album.AlbumElementses.Find(a => a.AlbumId == id).AlbumName;
+            string albumName = album.AlbumElements.Find(a => a.AlbumId == id).AlbumName;
             Uri urladdress =
                 new Uri(
                     $"http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=f888d5f469cb97bf8a68b72c9c721cbc&artist={album.ArtistName}&album={albumName}&format=json");
@@ -33,10 +33,10 @@ namespace MusicApp.Models
 
             AlbumSong albumsong = new AlbumSong
             {
-                ArtistName = album.ArtistName,
-                Name = albumName,
-                CovertUrl = jsonsearch["image"][3]["#text"].ToString(),
-                ArtistImagetUrl = album.ArtistImgUrl
+                AlbumArtistName = album.ArtistName,
+                AlbumName = albumName,
+                AlbumCovertUrl = jsonsearch["image"][3]["#text"].ToString(),
+                AlbumArtistImagetUrl = album.ArtistImgUrl
             };
 
 

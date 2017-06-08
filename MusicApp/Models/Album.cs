@@ -13,7 +13,7 @@ namespace MusicApp.Models
 
         public string ArtistName { get; set; }
         public string ArtistImgUrl { get; set; }
-        public List<AlbumElement> AlbumElementses = new List<AlbumElement>();
+        public List<AlbumElement> AlbumElements = new List<AlbumElement>();
 
 
         private readonly GetJsonAsync _getJson = new GetJsonAsync();
@@ -47,7 +47,7 @@ namespace MusicApp.Models
                     AlbumCovertUrl = EncodeStringUtf8(jsonsearch[i]["image"][3]["#text"].ToString())
                 };
 
-                album.AlbumElementses.Add(albumElement);
+                album.AlbumElements.Add(albumElement);
 
             }
 

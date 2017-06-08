@@ -6,15 +6,18 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Caching;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.WebPages;
 using MusicApp.Cache;
 using MusicApp.Models;
 
 namespace MusicApp.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class MusicController : ApiController
     {
         private MemoryCacher _cache = new MemoryCacher();
+
         [HttpGet]
         public async Task<IEnumerable<Song>> GetSongs(string search)
         {
@@ -37,7 +40,20 @@ namespace MusicApp.Controllers
             {
                 SongYouTube songYouTube = new SongYouTube();
                 songYouTube = await songYouTube.ConvertSongToYouTubeSong(song);
+                _cache.ClearCache(MemoryCacher.DateToCache.ChooseSong.ToString());
+                _cache.Add(MemoryCacher.DateToCache.ChooseSong.ToString(), songYouTube, DateTimeOffset.UtcNow.AddMinutes(30));
                 return songYouTube;
+            }
+            return null;
+        }
+
+        [HttpGet]
+        public  SongYouTube Song()
+        {
+            if (_cache.IfCacheExsist(MemoryCacher.DateToCache.ChooseSong.ToString()))
+            {
+                var songYT = (SongYouTube)_cache.GetValue(MemoryCacher.DateToCache.ChooseSong.ToString());
+                return songYT;
             }
             return null;
         }
@@ -47,7 +63,7 @@ namespace MusicApp.Controllers
         {
             IArtist artist = new Artist();
             var artists = await artist.GetArtistsAsync(search);
-
+           
             _cache.ClearCache(MemoryCacher.DateToCache.Artists.ToString());
             _cache.Add(MemoryCacher.DateToCache.Artists.ToString(), artists, DateTimeOffset.UtcNow.AddMinutes(30));
 
@@ -72,7 +88,7 @@ namespace MusicApp.Controllers
 
             return null;
         }
-
+        
         [HttpGet]
         public async Task<AlbumSong> GetAlbumsSongs(int id)
         {
@@ -103,17 +119,20 @@ namespace MusicApp.Controllers
             {
                 IAlbumSongYouTube albumSongYouTube = new AlbumSongYouTube();
                 var albumSongYouTubes = await albumSongYouTube.ConvertAlbumSongToYouTubeAlbumSong(albumWithSongs,id);
+                _cache.ClearCache(MemoryCacher.DateToCache.ChooseAlbumSong.ToString());
+                _cache.Add(MemoryCacher.DateToCache.ChooseAlbumSong.ToString(), albumSongYouTubes, DateTimeOffset.UtcNow.AddMinutes(30));
                 return albumSongYouTubes;
             }
             return null;
         }
 
-        [HttpPost]
-        public List<Song> CachedSongs()
+        [HttpGet]
+        public AlbumSongYouTube AlbumSong()
         {
-            if (_cache.IfCacheExsist(MemoryCacher.DateToCache.Songs.ToString()))
+            if (_cache.IfCacheExsist(MemoryCacher.DateToCache.ChooseAlbumSong.ToString()))
             {
-                return (List<Song>)_cache.GetValue(MemoryCacher.DateToCache.Songs.ToString());
+                var albumSongYT = (AlbumSongYouTube)_cache.GetValue(MemoryCacher.DateToCache.ChooseSong.ToString());
+                return albumSongYT;
             }
             return null;
         }

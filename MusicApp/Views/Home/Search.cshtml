@@ -1,0 +1,110 @@
+﻿
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/Mobile.cshtml";
+}
+
+<div id="update" >
+    <form id="searching" onsubmit="loadSongs()" >
+    
+        <input  id="searchText" style="color:black" name="search" type="text" />
+        <button id="btn-submit" class="btn btn-primary btn-sm " type="submit">Szukaj</button>
+ 
+    </form>
+   
+    <div class="row">
+        <div class="col-xs-1 col-lg-4"></div>
+        
+        <div id="songs-items" class="col-xs-10 col-lg-4">
+
+     
+        </div>
+        <div class="col-xs-1 col-lg-4"></div>
+    
+
+    </div>
+
+
+
+</div>
+@section scripts{
+<script>
+
+    let form = document.querySelector('#searching')
+
+    function init() {
+        form.addEventListener('submit', loadSongs)
+        
+    }
+
+    class Artist {
+        constructor(ArtistId, ArtistName, ArtistImgUrl) {
+            this.ArtistId = ArtistId
+            this.ArtistName = ArtistName
+            this.ArtistImgUrl = ArtistImgUrl
+        }
+    }
+
+    function loadSongs() {
+
+            
+        let input = document.querySelector('#searchText')
+            
+        $.ajax({
+            url: 'http://localhost:58115/api/music/GetArtists?search='+input.value,
+            method:'GET',
+            dataType: "text",
+            success: function(data) {
+                var jsonData = JSON.parse(data);
+
+                for (let i = 0; i < jsonData.length; i++) {
+
+                    let artistId = jsonData[i].ArtistId
+                    let artistName = jsonData[i].ArtistName
+                    let artistImgUrl = jsonData[i].ArtistImgUrl
+
+                    addSongToList(new Artist(artistId, artistName, artistImgUrl))
+
+
+                }
+            }
+        })
+    }
+
+    function addSongToList(artist) {
+        let a = document.createElement('a')
+        a.setAttribute('id', artist.ArtistId)
+
+        let song = document.createElement('div')
+        song.classList.add('song', 'col-xs-12', 'col-lg-12')
+
+        let songImage = document.createElement('div')
+        songImage.classList.add('song-image', 'col-xs-4', 'col-lg-3')
+
+        let image = document.createElement('img')
+        image.setAttribute('src', artist.ArtistImgUrl)
+
+        let songDate = document.createElement('div')
+        songDate.classList.add('song-date', 'col-xs-8', 'col-lg-9')
+
+        let songDateArtist = document.createElement('div')
+        songDateArtist.classList.add('song-date-artist', 'col-xs-12', 'col-lg-12')
+        songDateArtist.innerHTML = artist.ArtistName
+
+
+        songImage.appendChild(image)
+        songDate.appendChild(songDateArtist)
+        song.appendChild(songImage)
+        song.appendChild(songDate)
+        a.appendChild(song)
+
+        let test = document.querySelector('#songs-items')
+        test.appendChild(a)
+
+    }
+
+
+</script>
+
+
+}

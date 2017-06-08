@@ -1,0 +1,270 @@
+﻿@{
+    Layout = "~/Views/Shared/Mobile.cshtml";
+}
+
+
+<div id="update">
+    <form id="searching" action="#">
+
+        <input id="searchText" style="color:black" name="search" type="text" />
+        <button id="btn-submit" class="btn btn-primary btn-sm " type="button" onclick="Load()">Szukaj</button>
+
+    </form>
+
+    <div class="row">
+        <div class="col-xs-1 col-lg-4"></div>
+
+        <div id="songs-items" class="col-xs-10 col-lg-4">
+
+
+        </div>
+        <div class="col-xs-1 col-lg-4"></div>
+
+
+    </div>
+
+
+
+</div>
+@section scripts{
+    <script>
+
+        function Init() {
+
+            let input = document.getElementById("searchText")
+            input.addEventListener("click",
+                function (event) {
+                    input.value = "";
+                })
+
+
+            document.getElementById("searching")
+                .addEventListener("submit",
+                function (event) {
+                    event.preventDefault();
+                    let inputText = document.getElementById("searchText").value
+                    if (inputText !== "") {
+                        loadArtists(inputText)
+                    } else {
+                        alert("Check your key word !")
+                    }
+                    return false;
+                });
+
+
+        }
+
+        class Artist {
+            constructor(ArtistId, ArtistName, ArtistImgUrl) {
+                this.ArtistId = ArtistId
+                this.ArtistName = ArtistName
+                this.ArtistImgUrl = ArtistImgUrl
+            }
+        }
+
+        function createArtistsList(artist) {
+
+            let artistHtml = `
+     <div id="${artist.ArtistId}" class="song col-xs-12 col-lg-12" onClick="loadAlbums(this.id)">
+
+                        <div class="song-image col-xs-4 col-lg-3">
+                            <img src="${artist.ArtistImgUrl}" />
+
+                        </div>
+                        <div class="song-date col-xs-8 col-lg-9">
+
+                            <div class="song-date-artist col-xs-12 col-lg-12 " >${artist.ArtistName}</div>
+
+                        </div>
+
+                    </div>
+
+
+`;
+
+
+            return artistHtml.toString()
+
+        }
+
+        function Load() {
+            let inputText = document.getElementById("searchText").value
+            if (inputText !== "") {
+                loadArtists(inputText)
+            } else {
+                alert("Check your key word !")
+            }
+        }
+
+        function loadArtists(inputText) {
+
+            $.ajax({
+                url: 'http://api.dragonet.com.pl/api/music/GetArtists?search=' + inputText,
+                method: 'GET',
+                dataType: "text",
+                success: function (data) {
+                    let list = new Array();
+
+                    var jsonData = JSON.parse(data);
+
+                    for (let i = 0; i < jsonData.length; i++) {
+
+                        list[i] = (createArtistsList(new Artist(jsonData[i].ArtistId,
+                            jsonData[i].ArtistName,
+                            jsonData[i].ArtistImgUrl)))
+
+                    }
+
+                    document.getElementById("songs-items").innerHTML = list.join("")
+
+                }
+
+            })
+        }
+
+        class Album {
+            constructor(AlbumId, AlbumName, AlbumCovertUrl, ArtistName, ArtistImgUrl) {
+                this.AlbumId = AlbumId
+                this.AlbumName = AlbumName
+                this.AlbumCovertUrl = AlbumCovertUrl,
+                this.ArtistName = ArtistName,
+                this.ArtistImgUrl = ArtistImgUrl
+            }
+        }
+
+        function createAlbumsList(album) {
+
+            let albumHtml = `
+     <div id="${album.AlbumId}" class="song col-xs-12 col-lg-12" onClick="loadAlbumSongs(this.id)">
+
+                        <div class="song-image col-xs-4 col-lg-3">
+                            <img src="${album.AlbumCovertUrl}" />
+
+                        </div>
+                        <div class="song-date col-xs-8 col-lg-9">
+
+                            <div class="song-date-artist col-xs-12 col-lg-12 "style="height: 100%; width: 100%;margin-top: 0.8em; color: #a9a9a9;text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);" >${album.AlbumName}</div>
+
+                        </div>
+
+                    </div>
+
+
+`;
+
+
+            return albumHtml.toString()
+
+        }
+
+
+        function loadAlbums(artistID) {
+            $.ajax({
+                url: 'http://api.dragonet.com.pl/api/music/GetAlbums?id=' + artistID,
+                method: 'GET',
+                dataType: "text",
+                success: function (data) {
+                    let list = new Array();
+
+                    var jsonData = JSON.parse(data);
+
+                    for (let i = 0; i < jsonData["AlbumElements"].length; i++) {
+
+                        list[i] = (createAlbumsList(new Album(
+                            jsonData["AlbumElements"][i].AlbumId,
+                            jsonData["AlbumElements"][i].AlbumName,
+                            jsonData["AlbumElements"][i].AlbumCovertUrl,
+                            jsonData.ArtistName,
+                            jsonData.ArtistImgUrl)))
+
+
+                    }
+
+                    document.getElementById("songs-items").innerHTML = list.join("")
+
+                }
+
+            })
+        }
+
+        function loadAlbumSongs(albumId) {
+
+            $.ajax({
+                url: 'http://api.dragonet.com.pl/api/music/GetAlbumsSongs?id=' + albumId,
+                method: 'GET',
+                dataType: "text",
+                success: function (data) {
+                    let list = new Array();
+
+                    var jsonData = JSON.parse(data);
+
+                    for (let i = 0; i < jsonData["AlbumSongsNames"].length; i++) {
+
+                        list[i] = (createAlbumsSongsList(new AlbumSong(
+                            jsonData["AlbumSongsNames"][i].SongId,
+                            jsonData["AlbumSongsNames"][i].SongName,
+                            jsonData.AlbumCovertUrl,
+                            jsonData.AlbumName,
+                            jsonData.AlbumArtistImgUrl)))
+
+
+                    }
+
+                    document.getElementById("songs-items").innerHTML = list.join("")
+
+                }
+
+            })
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        class AlbumSong {
+            constructor(SongId,SongName, AlbumCovertUrl, AlbumName, AlbumArtistImgUrl) {
+                this.SongId = SongId
+                this.SongName = SongName
+                this.AlbumCovertUrl = AlbumCovertUrl,
+                this.AlbumName = AlbumName
+                this.AlbumArtistImgUrl = AlbumArtistImgUrl
+            }
+        }
+
+        function createAlbumsSongsList(albumSong) {
+
+            let albumSongHtml = `
+     <a href="#"> <div id="${albumSong.SongId}" class="song col-xs-12 col-lg-12" onClick="albumSong(this.id)">
+
+                        <div class="song-image col-xs-4 col-lg-3">
+                            <img src="${albumSong.AlbumCovertUrl}" />
+
+                        </div>
+                        <div class="song-date col-xs-8 col-lg-9">
+
+                            <div class="song-date-artist col-xs-12 col-lg-12 "style="height: 100%; width: 100%;margin-top: 0.8em; color: #a9a9a9;text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);" >${albumSong.SongName}</div>
+
+                        </div>
+
+                    </div></a>
+
+
+`;
+
+
+            return albumSongHtml.toString()
+
+        }
+
+        function albumSong(albumsongId) {
+            $.ajax({
+                url: 'http://api.dragonet.com.pl/api/music/ChooseAlbumSong?id=' + albumsongId,
+                method: 'GET',
+                dataType: "text",
+                success: function() {
+                    
+                    window.location = "Home/PlayerAlbumSong";
+
+                }
+
+            })
+            
+        }
+    </script>
+}

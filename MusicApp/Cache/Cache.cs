@@ -11,7 +11,7 @@ namespace MusicApp.Cache
 
         public enum DateToCache
         {
-            Songs,Artists,Albums,AlbumsSongs
+            Songs,Artists,Albums,AlbumsSongs,ChooseSong,ChooseAlbumSong
         }
         public object GetValue(string key)
         {

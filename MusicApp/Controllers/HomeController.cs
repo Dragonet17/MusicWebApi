@@ -20,5 +20,35 @@ namespace MusicApp.Controllers
 
             return View();
         }
+
+        public ActionResult Search()
+        {
+
+            return View();
+        }
+
+        public ActionResult Songs()
+        {
+
+            return View();
+        }
+
+        public ActionResult Artists()
+        {
+
+            return View();
+        }
+
+        public ActionResult PlayerSong()
+        {
+
+            return View();
+        }
+
+        public ActionResult PlayerAlbumSong()
+        {
+
+            return View();
+        }
     }
 }

@@ -19,12 +19,12 @@ namespace MusicApp.Models
             {
                 SongId = 0,
                 SongName = (albumsong.AlbumSongsNames.Find(s => s.Id == id).SongName),
-                ArtistName = albumsong.ArtistName,
-                AlbumCovertUrl = albumsong.CovertUrl
+                ArtistName = albumsong.AlbumArtistName,
+                AlbumCovertUrl = albumsong.AlbumCovertUrl
             };
 
 
-            string search = $"{albumsong.ArtistName} {albumSongsYt.YouTubeVideoUrl}";
+            string search = $"{albumsong.AlbumArtistName} {albumSongsYt.YouTubeVideoUrl}";
             albumSongsYt.YouTubeVideoUrl = await GetYouTubeVideoUrl(search);
             return albumSongsYt;
         }

@@ -8,10 +8,10 @@ namespace MusicApp.Models
 {
     interface IAlbumSong
     {
-        string ArtistName { get; set; }
-        string Name { get; set; }
-        string CovertUrl { get; set; }
-        string ArtistImagetUrl { get; set; }
+        string AlbumArtistName { get; set; }
+        string AlbumName { get; set; }
+        string AlbumCovertUrl { get; set; }
+        string AlbumArtistImagetUrl { get; set; }
         
         Task<AlbumSong> GetAlbumSongs(Album album,int id);
 
